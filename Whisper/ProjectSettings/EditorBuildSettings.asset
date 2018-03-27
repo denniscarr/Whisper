@@ -9,5 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/IntroScreen.unity
     guid: 39bf71c930c49ff4287bfe1ec5864af5
   - enabled: 1
+    path: Assets/Scenes/TutorialScreen.unity
+    guid: 552f6c1929df68844b8ee5528b02eca4
+  - enabled: 1
     path: Assets/Scenes/Denith smoapolii dfeh.unity
     guid: 3b2541e03ab18c34c8ab8114c3fe2577
