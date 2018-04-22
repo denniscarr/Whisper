@@ -29,14 +29,23 @@ public class WebLine : MonoBehaviour {
         RemoveHealthNotTouch();
         float tempWidth = currentWidth + Random.Range(-0.1f, 0.1f);
         GetComponent<LineRenderer>().widthMultiplier = tempWidth;
-        GetComponent<LineRenderer>().material.mainTextureOffset = new Vector2(Random.Range(-10f, 10f), Random.Range(-10f, 10f));
-        GetComponent<LineRenderer>().material.mainTextureScale = new Vector2(Random.Range(-10f, 10f), Random.Range(-10f, 10f));
+        GetComponent<LineRenderer>().material.SetFloat("_Cutoff", Random.Range(0.16f, 0.86f));
+        GetComponent<LineRenderer>().material.mainTextureOffset = new Vector2(Random.Range(-1, 1), 1);
+        GetComponent<LineRenderer>().material.mainTextureScale = new Vector2(Random.Range(-10f, 10f), 1);
     }
 
-    public void SetLinePositions(Vector3 position1, Vector3 position2, float thickness) {
-        GetComponent<LineRenderer>().SetPosition(0, position1);
-        GetComponent<LineRenderer>().SetPosition(1, position2);
-        SetTransformByEndPoints(position1, position2, thickness);
+    int numberOfPositions = 10;
+    public void SetLinePositions(Vector3 beginning, Vector3 end, float thickness) {
+        GetComponent<LineRenderer>().positionCount = numberOfPositions;
+        GetComponent<LineRenderer>().SetPosition(0, beginning);
+        for (int i = 1; i < numberOfPositions-1; i++) {
+            Vector3 directionToEndPoint = Vector3.Normalize(end - beginning);
+            Vector3 newPos = beginning + directionToEndPoint * (Vector3.Distance(beginning, end) / numberOfPositions) * i;
+            GetComponent<LineRenderer>().SetPosition(i, newPos);
+        }
+        GetComponent<LineRenderer>().SetPosition(numberOfPositions-1, end);
+
+        SetTransformByEndPoints(beginning, end, thickness);
     }
 
     public void SetTransformByEndPoints(Vector3 back, Vector3 front, float thickness) {
@@ -66,11 +75,13 @@ public class WebLine : MonoBehaviour {
 
     void TestForDeath() {
         currentWidth = MyMath.Map(health, 0f, 1f, minWidth, startingWidth);
-        if (currentWidth <= 0.2f) {
-            GetComponent<LineRenderer>().material.color = Color.white;
+        if (currentWidth <= 0.1f) {
+            GetComponent<LineRenderer>().material.color = Color.gray;
+            GetComponent<LineRenderer>().material.SetColor("_EmissionColor", Color.gray);
         }
         else {
             GetComponent<LineRenderer>().material.color = originalColor;
+            GetComponent<LineRenderer>().material.SetColor("_EmissionColor", originalColor);
         }
 
         if (health <= 0) {

@@ -292,7 +292,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: fc9b3c21f58e0e649829ac618436d048, type: 2}
+  - {fileID: 2100000, guid: 574980313a308964887c29b2f5c05419, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -479,10 +479,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 1547580204298864, guid: f92ca4a5da04c924eb3343586b816fd8, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f92ca4a5da04c924eb3343586b816fd8, type: 2}
   m_IsPrefabParent: 0
@@ -528,7 +524,7 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: c4c0d2fe38e8d4c4c9f59fb6c4270857, type: 2}
+  - {fileID: 2100000, guid: 5ebd605886d3ef147a002a8a48f92fce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

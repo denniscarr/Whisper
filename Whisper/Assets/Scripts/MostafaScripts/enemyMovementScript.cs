@@ -59,7 +59,7 @@ public class enemyMovementScript : MonoBehaviour {
         }
 
         if (randomMod == 0) {
-            randomMod = 2;
+            randomMod = 1;
         }
 
         stoppedChasing = true;
@@ -110,7 +110,7 @@ public class enemyMovementScript : MonoBehaviour {
                 HealthyMovement();
                 break;
             case State.Trapped:
-                noiseTime += 5f * Time.deltaTime;
+                noiseTime += 2f * Time.deltaTime;
                 VulnerableMovement();
                 
                 timerFloat = timerFloat + Time.deltaTime;
@@ -143,24 +143,40 @@ public class enemyMovementScript : MonoBehaviour {
             x, y, 0)
             );
 
-        transform.position = Vector3.MoveTowards(transform.position, newPos, enemySpeed * Time.deltaTime);
+        transform.position = newPos;
 
     }
 
-    private void BecomeTrapped() {
+    private void BecomeTrapped(GameObject web) {
         state = State.Trapped;
-        anchorPoint = transform.position;
-        anchorPointObject.transform.position = anchorPoint;
+
+        // Get position of anchor point
+        Vector3 directionToWeb = Vector3.zero;
+        Vector3 enemyPosInWebSpace = web.transform.InverseTransformPoint(transform.position);
+        enemyPosInWebSpace.z = 0;
+        anchorPoint = web.transform.TransformPoint(enemyPosInWebSpace);
+
         anchorPointObject.SetActive(true);
+        anchorPointObject.transform.position = anchorPoint;
+        anchorPointObject.transform.parent = null;
+
+        //GetComponent<SpriteRenderer>().color = new Color(0.55f, 0.3f, 0.35f);
+        GetComponentInChildren<TrailRenderer>().material.SetColor("_EmissionColor", Color.white);
+        ParticleSystem.MainModule particleMain = GetComponentInChildren<ParticleSystem>().main;
+        particleMain.startColor = new Color(0.9f, 0.9f, 0.9f);
+
         lineRenderer.enabled = true;
         stopPos = anchorPoint;
-        randomMod = 3f;
+        randomMod = 1f;
     }
 
     public void BecomeFree() {
         state = State.Free;
         anchorPointObject.SetActive(false);
         lineRenderer.enabled = false;
+        GetComponentInChildren<TrailRenderer>().material.SetColor("_EmissionColor", Color.black);
+        ParticleSystem.MainModule particleMain = GetComponentInChildren<ParticleSystem>().main;
+        particleMain.startColor = Color.black;
         randomMod = 2f;
         noiseScale = 0f;
     }
@@ -174,7 +190,7 @@ public class enemyMovementScript : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (other.name.Contains("Web Line") && state == State.Free) {
-            BecomeTrapped();
+            BecomeTrapped(other.gameObject);
             other.GetComponent<WebLine>().trappedEnemies.Add(gameObject);
             GetComponentInChildren<EnemyAudioScript>().OnTrappedInWeb();
         }

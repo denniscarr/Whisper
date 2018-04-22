@@ -10,10 +10,9 @@ public class FocusPoint : MonoBehaviour {
     float timer;
     float timeToForm = 2f;
 
-    [SerializeField] FocusPointSphere sphere;
+    [SerializeField] FocusPointSprite sprite;
     [SerializeField] GameObject webLinePrefab;
     List<GameObject> webToObjects = new List<GameObject>();
-
 
     [SerializeField] AudioClip[] playerMakeLinkSound;
     [SerializeField] AudioClip[] breakLinkSound;
@@ -24,7 +23,7 @@ public class FocusPoint : MonoBehaviour {
     public State state = State.Expanding;
 
     private void Start() {
-        sphere = GetComponentInChildren<FocusPointSphere>();
+        sprite = GetComponentInChildren<FocusPointSprite>();
     }
 
     private void Update() {
@@ -39,11 +38,11 @@ public class FocusPoint : MonoBehaviour {
                 break;
         }
 
-        sphere.currentIntensity = lockInPercent;
+        sprite.currentIntensity = lockInPercent;
     }
 
     void Normal() {
-        lockInPercent *= 0.99f;
+        lockInPercent *= 0.9f;
 
         if (lockInPercent <= 0.01f) {
             DestroySelf();
@@ -64,24 +63,21 @@ public class FocusPoint : MonoBehaviour {
         lockInPercent = MyMath.Map(timer, 0, timeToForm, 0f, 1f);
         lockInPercent = Mathf.Clamp01(lockInPercent);
 
+        // Get locked in
         if (lockInPercent >= 1f) {
             lockInPercent = 0.5f;
 
-            Color newColor = sphere.gameObject.GetComponent<MeshRenderer>().material.color;
+            // Change color
+            Color newColor = sprite.GetComponent<SpriteRenderer>().color;
             newColor.r = 0f;
             newColor.g = 0f;
             newColor.b = 0f;
             newColor.a = 1f;
-            sphere.GetComponent<MeshRenderer>().material.color = newColor;
+            sprite.GetComponent<SpriteRenderer>().color = newColor;
 
-            sphere.TurnThisColor(newColor);
+            sprite.TurnThisColor(newColor);
 
-            newColor = sphere.gameObject.GetComponent<MeshRenderer>().material.GetColor("_EmissionColor");
-            newColor.r = 0f;
-            newColor.g = 0f;
-            newColor.b = 0f;
-            sphere.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", newColor);
-            sphere.gameObject.layer = LayerMask.NameToLayer("Player");
+            sprite.gameObject.layer = LayerMask.NameToLayer("Player");
 
             FocusPoint[] otherFocusPoints = FindObjectsOfType<FocusPoint>();
             foreach (FocusPoint focusPoint in otherFocusPoints) {
@@ -90,8 +86,6 @@ public class FocusPoint : MonoBehaviour {
                 if (webToObjects.Contains(focusPoint.gameObject)) { continue; }
                 GameObject newWebLine = Instantiate(webLinePrefab);
                 newWebLine.GetComponent<WebLine>().SetLinePositions(transform.position, focusPoint.transform.position, 0.2f);
-                newWebLine.GetComponent<LineRenderer>().SetPosition(0, transform.position);
-                newWebLine.GetComponent<LineRenderer>().SetPosition(1, focusPoint.transform.position);
                 webToObjects.Add(focusPoint.gameObject);
             }
 
@@ -114,7 +108,6 @@ public class FocusPoint : MonoBehaviour {
 
 
     public void DestroySelf() {
-      
         Destroy(gameObject);
     }
 }

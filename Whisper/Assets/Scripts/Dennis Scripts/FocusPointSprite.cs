@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FocusPointSphere : MonoBehaviour {
+public class FocusPointSprite : MonoBehaviour {
 
     float startingScale;
     float baseScale;
@@ -15,11 +15,11 @@ public class FocusPointSphere : MonoBehaviour {
     [HideInInspector] public float currentIntensity = 0f;
 
     float alpha {
-        get { return GetComponent<MeshRenderer>().material.color.a; }
+        get { return GetComponent<SpriteRenderer>().color.a; }
         set {
-            Color newColor = GetComponent<MeshRenderer>().material.color;
+            Color newColor = GetComponent<SpriteRenderer>().color;
             newColor.a = value;
-            GetComponent<MeshRenderer>().material.color = newColor;
+            GetComponent<SpriteRenderer>().color = newColor;
         }
     }
 
@@ -39,19 +39,18 @@ public class FocusPointSphere : MonoBehaviour {
 
         float newAlpha = MyMath.Map(baseScale, startingScale, maxScale, startingAlpha, maxAlpha);
         alpha = newAlpha;
-        foreach (SkinnedMeshRenderer mr in GetComponentsInChildren<SkinnedMeshRenderer>()) {
-            Color newColor = mr.material.color;
+        foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>()) {
+            Color newColor = sr.color;
             newColor.a = newAlpha;
-            mr.material.color = newColor;
+            sr.color = newColor;
         }
     }
 
     public void TurnThisColor(Color color) {
-        foreach (SkinnedMeshRenderer mr in GetComponentsInChildren<SkinnedMeshRenderer>()) {
-            mr.material.color = color;
-            mr.material.SetColor("_EmissionColor", color);
-            mr.gameObject.layer = LayerMask.NameToLayer("Player");
+        foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>()) {
+            sr.color = color;
+            //sr.gameObject.layer = LayerMask.NameToLayer("Player");
         }
-        GetComponent<MeshRenderer>().material.color = color; 
+        GetComponent<SpriteRenderer>().color = color;
     }
 }
