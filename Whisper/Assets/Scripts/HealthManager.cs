@@ -8,7 +8,7 @@ public class HealthManager : MonoBehaviour {
     [SerializeField] float invincibilityTime = 0.4f;
     float invincibilityTimer = 0f;
     [SerializeField] GameObject[] healthBoxes;
-    int health = 3;
+    public int health = 3;
     ScreenBlur blur;
 
 
